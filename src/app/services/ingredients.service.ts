@@ -7,7 +7,7 @@ export class IngredientsService {
     startedEditing = new Subject<number>();
     private ingredients: Ingredient [] = [
         new Ingredient('Tomatoes', 5),
-        new Ingredient('Apples', 3)
+        new Ingredient('Apples', 3),
     ];
     
     getIngredients() { 
@@ -25,19 +25,23 @@ export class IngredientsService {
     
     addIngredient(ingredient: Ingredient) {
         this.ingredients.push(ingredient);
-        this.ingredientsChanged.next(this.ingredients.slice());
-        console.log(this.ingredients);
-        
+        this.ingredientsChanged.next(this.ingredients.slice());  
     }
 
-    addIngredients(auxIngredients: Ingredient[]){
-        
-        for (const i of auxIngredients){
-            
-            this.ingredients.push(i);
-        }
-        console.log(this.ingredients);
-        this.ingredientsChanged.next(this.ingredients.slice());
+    addIngredients(auxIngredients: Ingredient[]){ 
+        for(const i of auxIngredients){
+            var ing = this.ingredients.find(Ingredient => Ingredient.name === i.name); 
+                if (ing !== undefined){
+                    ing.amount = i.amount+ ing.amount;
+                }else{
+                    this.ingredients.push(i);
+                }
+              }
+       this.ingredientsChanged.next(this.ingredients.slice());
     }
 
+    onDelete(index: number){
+        this.ingredients.splice(index, 1);
+        this.ingredientsChanged.next(this.ingredients.slice());
+    }
 }
